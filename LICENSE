@@ -1,0 +1,54 @@
+LtnProject Open Source License (LPOSL) v1.0
+Copyright (c) 2024 LtnProject (https://github.com/ltnproject)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, subject to the following conditions:
+
+─────────────────────────────────────────────────────────────────────────────
+ATTRIBUTION REQUIREMENT (MANDATORY)
+─────────────────────────────────────────────────────────────────────────────
+
+Any person or organization that forks, modifies, redistributes, or builds
+upon this Software — in whole or in part — MUST:
+
+  1. Clearly credit "LtnProject" as the original author in:
+       a) The project's README or documentation, AND
+       b) Any publicly accessible about page, footer, or credits section
+          of the resulting software or website.
+
+  2. Include a visible link to the original repository:
+       https://github.com/ltnproject/ais-fibre-modded-ui
+
+  3. Preserve this LICENSE file and all existing copyright notices in any
+     copies or substantial portions of the Software.
+
+Failure to comply with the attribution requirement constitutes a violation
+of this license and revokes all rights granted herein.
+
+─────────────────────────────────────────────────────────────────────────────
+GENERAL TERMS
+─────────────────────────────────────────────────────────────────────────────
+
+The above copyright notice, attribution requirement, and this permission
+notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+─────────────────────────────────────────────────────────────────────────────
+SUMMARY
+─────────────────────────────────────────────────────────────────────────────
+
+  ✅  Free to use personally and commercially
+  ✅  Free to fork and modify
+  ✅  Free to redistribute
+  ❌  Cannot remove credit to LtnProject
+  ❌  Cannot claim original authorship without attribution
