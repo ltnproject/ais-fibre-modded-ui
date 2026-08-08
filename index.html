@@ -3,732 +3,333 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="description" content="AIS Fibre Router Admin Panel — Modern UI"/>
-<title>AIS Fibre — Router Admin</title>
+<meta name="description" content="AIS Fibre Router Admin — Beautiful dark UI skin by LtnProject. Drag the bookmarklet to your bar and activate it on your router page."/>
+<title>AIS Fibre Modded UI — by LtnProject</title>
 <link rel="shortcut icon" href="img/favicon.ico"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-
-<!-- ── ROUTER BASE URL ─────────────────────────────────────────────────── -->
-<!-- Login form posts directly to this router IP. No XHR used (bypasses    -->
-<!-- CORS + mixed-content completely). Change IP below if yours differs.    -->
-<script>
-  var ROUTER_BASE = "http://192.168.1.1";
-</script>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════════════════════════════════
-   RESET & TOKENS
-══════════════════════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* ══ TOKENS ════════════════════════════════════════════════════════════ */
 :root {
-  --bg:            #0a0f1e;
-  --surface:       rgba(255,255,255,0.05);
-  --surface-hover: rgba(255,255,255,0.09);
-  --border:        rgba(255,255,255,0.10);
-  --border-focus:  rgba(141,198,63,0.70);
-  --green:         #8dc63f;
-  --green-glow:    rgba(141,198,63,0.30);
-  --green-dark:    #6aa52d;
-  --text:          #e8edf5;
-  --text-muted:    rgba(232,237,245,0.50);
-  --error:         #ff5c5c;
-  --error-bg:      rgba(255,92,92,0.12);
-  --radius:        16px;
-  --radius-sm:     10px;
-  --shadow:        0 24px 64px rgba(0,0,0,0.55);
-  --transition:    0.22s cubic-bezier(0.4,0,0.2,1);
+  --bg:      #0a0f1e;
+  --surface: rgba(255,255,255,0.055);
+  --border:  rgba(255,255,255,0.10);
+  --green:   #8dc63f;
+  --glow:    rgba(141,198,63,0.28);
+  --dark:    #6aa52d;
+  --text:    #e8edf5;
+  --muted:   rgba(232,237,245,0.50);
+  --r:       14px;
+  --t:       0.22s cubic-bezier(0.4,0,0.2,1);
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 
-html, body {
-  min-height: 100%;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   ANIMATED BACKGROUND MESH
-══════════════════════════════════════════════════════════════════ */
-.bg-mesh {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
+/* ══ BACKGROUND ════════════════════════════════════════════════════════ */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(141,198,63,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%,  rgba(52,120,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 40% at 50% 50%,  rgba(141,198,63,0.04) 0%, transparent 70%);
-  animation: meshPulse 8s ease-in-out infinite alternate;
-}
-@keyframes meshPulse {
-  from { opacity: 0.7; }
-  to   { opacity: 1;   }
-}
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(141,198,63,.10) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 85%, rgba(52,120,255,.07) 0%,transparent 60%);
+  animation:pulse 8s ease-in-out infinite alternate;}
+@keyframes pulse{from{opacity:.7}to{opacity:1}}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:60px 60px;}
 
-.grid-lines {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
+/* ══ LAYOUT ════════════════════════════════════════════════════════════ */
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:60px 24px 80px;}
 
-/* ═══════════════════════════════════════════════════════════════════
-   LAYOUT
-══════════════════════════════════════════════════════════════════ */
-.page-wrap {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+/* ══ HEADER ════════════════════════════════════════════════════════════ */
+header{text-align:center;margin-bottom:64px;}
+.logo-img{height:52px;object-fit:contain;filter:drop-shadow(0 0 16px var(--glow));margin-bottom:20px;}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;
+   background:linear-gradient(135deg,#fff 30%,var(--green) 100%);
+   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+   margin-bottom:12px;}
+.tagline{font-size:16px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 28px;}
 
-/* ─── TOP BAR ─── */
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 36px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(10,15,30,0.70);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
+/* ══ BADGES ════════════════════════════════════════════════════════════ */
+.badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  background:var(--surface);border:1px solid var(--border);border-radius:100px;
+  padding:5px 14px;color:var(--muted);text-decoration:none;transition:border-color var(--t),color var(--t);}
+.badge:hover{border-color:var(--green);color:var(--text);}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
 
-.top-bar .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.top-bar .brand img {
-  height: 32px;
-  object-fit: contain;
-}
-.top-bar .brand-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-}
+/* ══ SECTION TITLE ═════════════════════════════════════════════════════ */
+.section-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--green);margin-bottom:20px;}
 
-.status-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  color: var(--text-muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 5px 14px;
-}
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: dotBlink 2s ease-in-out infinite;
-}
-@keyframes dotBlink {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0.4; }
-}
+/* ══ HOW IT WORKS ══════════════════════════════════════════════════════ */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:60px;}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px;position:relative;transition:border-color var(--t);}
+.step:hover{border-color:rgba(141,198,63,.35);}
+.step-num{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--green);margin-bottom:10px;}
+.step-title{font-size:15px;font-weight:600;margin-bottom:6px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.step code{background:rgba(141,198,63,.12);color:var(--green);padding:1px 6px;border-radius:4px;font-size:12px;}
 
-/* ─── MAIN CONTENT ─── */
-.main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-}
+/* ══ BOOKMARKLET CARD ══════════════════════════════════════════════════ */
+.bm-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:40px;margin-bottom:60px;text-align:center;}
+.bm-card h2{font-size:22px;font-weight:700;margin-bottom:8px;}
+.bm-card p{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
 
-/* ─── LOGIN CARD ─── */
-.login-card {
-  width: 100%;
-  max-width: 440px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 48px 44px 40px;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: var(--shadow), 0 0 0 1px rgba(141,198,63,0.05);
-  animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+/* The draggable bookmarklet button */
+.bm-link{
+  display:inline-block;
+  padding:16px 32px;
+  background:linear-gradient(135deg,var(--green) 0%,var(--dark) 100%);
+  border:none;
+  border-radius:12px;
+  color:#fff !important;
+  font-size:15px;
+  font-weight:700;
+  text-decoration:none !important;
+  cursor:grab;
+  box-shadow:0 6px 28px var(--glow);
+  transition:transform var(--t),box-shadow var(--t);
+  user-select:none;
+  position:relative;
+  overflow:hidden;
 }
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(28px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)   scale(1);    }
-}
+.bm-link::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 60%);
+  opacity:0;transition:opacity var(--t);}
+.bm-link:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(141,198,63,.50);}
+.bm-link:hover::before{opacity:1;}
+.bm-link:active{cursor:grabbing;}
+.bm-icon{margin-right:8px;}
 
-/* logo inside card */
-.card-logo {
-  text-align: center;
-  margin-bottom: 32px;
-}
-.card-logo img {
-  height: 48px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 16px var(--green-glow));
-}
-.card-logo .card-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-top: 16px;
-  background: linear-gradient(135deg, #fff 30%, var(--green) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.card-logo .card-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
+.bm-hint{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.6;}
+.bm-hint strong{color:var(--text);}
 
-/* ─── FORM FIELDS ─── */
-.field {
-  margin-bottom: 18px;
-}
-.field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
+/* Drag arrow animation */
+.drag-arrow{display:inline-block;font-size:24px;margin:20px 0 0;
+  animation:arrowBounce 1.4s ease-in-out infinite;}
+@keyframes arrowBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-.input-wrap {
-  position: relative;
-}
-.input-wrap .icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  opacity: 0.4;
-  pointer-events: none;
-  transition: opacity var(--transition);
-}
-.input-wrap input:focus ~ .icon,
-.input-wrap input:not(:placeholder-shown) ~ .icon {
-  opacity: 0.8;
-}
+/* ══ MANUAL INSTALL ════════════════════════════════════════════════════ */
+.manual-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:28px;margin-bottom:60px;}
+.manual-card h3{font-size:16px;font-weight:600;margin-bottom:16px;}
+.code-block{background:rgba(0,0,0,.40);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;font-family:monospace;font-size:12px;color:var(--green);
+  overflow-x:auto;white-space:pre-wrap;word-break:break-all;line-height:1.7;
+  position:relative;}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-size:11px;padding:4px 10px;cursor:pointer;
+  transition:background var(--t);}
+.copy-btn:hover{background:rgba(141,198,63,.15);}
 
-.field input[type="text"],
-.field input[type="password"] {
-  width: 100%;
-  height: 50px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  padding: 0 14px 0 42px;
-  outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
-  -webkit-text-security: none;
-}
-.field input[type="text"]::placeholder,
-.field input[type="password"]::placeholder {
-  color: rgba(255,255,255,0.20);
-}
-.field input[type="text"]:focus,
-.field input[type="password"]:focus {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px var(--green-glow);
-  background: rgba(141,198,63,0.05);
-}
+/* ══ FEATURE GRID ══════════════════════════════════════════════════════ */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:60px;}
+.feat{display:flex;gap:12px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.feat-icon{width:36px;height:36px;border-radius:8px;background:rgba(141,198,63,.12);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.feat-title{font-size:14px;font-weight:600;margin-bottom:3px;}
+.feat-desc{font-size:12px;color:var(--muted);line-height:1.5;}
 
-/* password toggle */
-.pw-toggle {
-  position: absolute;
-  right: 13px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  opacity: 0.35;
-  transition: opacity var(--transition);
-  background: none;
-  border: none;
-  color: var(--text);
-  padding: 4px;
-  display: flex;
-  align-items: center;
-}
-.pw-toggle:hover { opacity: 0.75; }
+/* ══ ATTRIBUTION ═══════════════════════════════════════════════════════ */
+.attr-card{background:rgba(141,198,63,.06);border:1px solid rgba(141,198,63,.25);
+  border-radius:var(--r);padding:28px;margin-bottom:60px;}
+.attr-card h3{font-size:16px;font-weight:600;margin-bottom:12px;color:var(--green);}
+.attr-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.attr-card p:last-child{margin:0;}
+.attr-card a{color:var(--green);text-decoration:none;}
+.attr-card a:hover{text-decoration:underline;}
+.req-list{list-style:none;margin:12px 0;display:flex;flex-direction:column;gap:6px;}
+.req-list li{font-size:13px;color:var(--muted);}
+.req-list li::before{content:'✅ ';margin-right:4px;}
+.req-list li.no::before{content:'❌ ';}
 
-/* captcha row */
-.captcha-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.captcha-row input {
-  flex: 1;
-}
-#captchaImg {
-  height: 50px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.05);
-  cursor: pointer;
-}
-#captchaArea { display: none; }
-
-/* ─── ERROR HINT ─── */
-.error-box {
-  display: none;
-  background: var(--error-bg);
-  border: 1px solid rgba(255,92,92,0.25);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  font-size: 13px;
-  color: var(--error);
-  margin-bottom: 18px;
-  animation: shake 0.4s cubic-bezier(0.36,0.07,0.19,0.97);
-}
-@keyframes shake {
-  10%,90% { transform: translateX(-2px); }
-  20%,80% { transform: translateX(4px);  }
-  30%,50%,70% { transform: translateX(-5px); }
-  40%,60% { transform: translateX(5px);  }
-}
-
-/* ─── SIGN IN BUTTON ─── */
-.btn-signin {
-  width: 100%;
-  height: 50px;
-  margin-top: 6px;
-  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
-  border: none;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
-  box-shadow: 0 4px 24px rgba(141,198,63,0.30);
-}
-.btn-signin::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity var(--transition);
-}
-.btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(141,198,63,0.45); }
-.btn-signin:hover::before { opacity: 1; }
-.btn-signin:active { transform: translateY(0); }
-.btn-signin:disabled { filter: grayscale(0.5); opacity: 0.6; cursor: not-allowed; transform: none; }
-
-/* spinner inside button */
-.btn-signin .spinner {
-  display: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255,255,255,0.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  margin: 0 auto;
-}
-.btn-signin.loading .btn-text  { display: none; }
-.btn-signin.loading .spinner   { display: block; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ─── HIDDEN FIELDS (needed by router JS) ─── */
-input[type="hidden"] { display: none !important; }
-
-/* ─── FOOTER ─── */
-.footer {
-  text-align: center;
-  padding: 20px;
-  font-size: 11px;
-  color: var(--text-muted);
-  border-top: 1px solid var(--border);
-  background: rgba(10,15,30,0.50);
-}
-.footer a { color: var(--text-muted); text-decoration: none; }
-.footer a:hover { color: var(--text); }
-
-/* ─── WAIT OVERLAY ─── */
-#waitOverlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(10,15,30,0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 16px;
-}
-#waitOverlay.active { display: flex; }
-.wait-ring {
-  width: 48px; height: 48px;
-  border: 3px solid rgba(141,198,63,0.20);
-  border-top-color: var(--green);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-.wait-label { font-size: 13px; color: var(--text-muted); }
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 480px) {
-  .login-card { padding: 36px 24px 30px; }
-  .top-bar { padding: 14px 20px; }
-}
+/* ══ FOOTER ════════════════════════════════════════════════════════════ */
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);
+  font-size:11px;color:var(--muted);}
+footer a{color:var(--muted);text-decoration:none;}
+footer a:hover{color:var(--text);}
 </style>
 </head>
 <body>
 
-<!-- ─── Animated background ─── -->
 <div class="bg-mesh" aria-hidden="true"></div>
-<div class="grid-lines" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
 
-<!-- ─── Wait overlay (used by common_lib.js showWaitTip) ─── -->
-<div id="waitOverlay" role="status" aria-live="polite">
-  <div class="wait-ring"></div>
-  <span class="wait-label">Connecting to router…</span>
-</div>
+<div class="wrap">
 
-<!-- ─── Black overlay + white content (legacy popups) ─── -->
-<div id="black_overlay" class="black_overlay" style="display:none;"></div>
-<div id="tipLayer"      class="white_content"  style="display:none;"></div>
-
-<div class="page-wrap">
-
-  <!-- ═══ TOP BAR ═══ -->
-  <header class="top-bar" id="banner">
-    <div class="brand">
-      <img src="img/aisfibre.png" alt="AIS Fibre" id="logo"/>
-      <span class="brand-name">Router Admin</span>
-    </div>
-
-    <div id="banner_switchArea" style="display:flex;align-items:center;gap:16px;">
-      <div id="timeArea" class="status-pill" style="display:none;">
-        <span class="status-dot"></span>
-        <span id="_DevCurrTime">--:--</span>
-      </div>
-      <div id="logUser"  class="status-pill" style="display:none;"></div>
-      <div id="logOff"   class="status-pill" style="display:none;cursor:pointer;">Sign out</div>
-      <div id="modeSwitch" style="display:none;">
-        <span id="modeBisic">Basic</span> | <span id="ModeAdvanced">Advanced</span>
-      </div>
-      <div id="languageSwitch" style="display:none;"></div>
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <img class="logo-img" src="img/aisfibre.png" alt="AIS Fibre"/>
+    <h1>AIS Fibre Modded UI</h1>
+    <p class="tagline">
+      A beautiful dark glassmorphism skin for the AIS Fibre router admin panel.<br/>
+      Inject it instantly via bookmarklet — no install, no server, no CORS issues.
+    </p>
+    <div class="badges">
+      <span class="badge"><span class="dot"></span> Open Source</span>
+      <a class="badge" href="https://github.com/ltnproject/ais-fibre-modded-ui" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0112 6.8c.85.004 1.71.115 2.51.337 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10.01 10.01 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+        GitHub
+      </a>
+      <span class="badge">ZTE F6107A · AIS Fibre</span>
+      <span class="badge">by LtnProject</span>
     </div>
   </header>
 
-  <!-- ═══ NAV (hidden on login, shown after login by common_lib) ═══ -->
-  <nav id="mainNavigator" style="display:none;">
-    <div id="mn_first"></div>
-    <div id="mn_li"></div>
-    <div id="mn_last"></div>
-  </nav>
-
-  <!-- ═══ MAIN ═══ -->
-  <main class="main" id="page_content">
-
-    <!-- LEFT SIDEBAR (post-login) -->
-    <div id="commLeft" style="display:none;">
-      <ul id="class2MenuItem"></ul>
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <p class="section-title">How it works</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">STEP 01</div>
+      <div class="step-title">Drag the bookmarklet</div>
+      <div class="step-desc">Drag the green button below to your browser's bookmarks bar. One-time setup.</div>
     </div>
+    <div class="step">
+      <div class="step-num">STEP 02</div>
+      <div class="step-title">Visit your router</div>
+      <div class="step-desc">Open <code>http://192.168.1.1</code> while connected to your AIS Fibre Wi-Fi.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">STEP 03</div>
+      <div class="step-title">Click the bookmarklet</div>
+      <div class="step-desc">Click it from your bookmarks bar. The router page instantly transforms to dark mode.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">STEP 04</div>
+      <div class="step-title">Login normally</div>
+      <div class="step-desc">Session token, captcha, and form submission all work natively — nothing is broken.</div>
+    </div>
+  </div>
 
-    <!-- COMMON PAGE CONTAINER (post-login) -->
-    <div id="commRight" style="display:none;">
-      <div id="class3Menu" style="display:none;">
-        <div id="scrollLeftBtn"></div>
-        <div id="class3MenuMainContent"><ul></ul></div>
-        <div id="scrollRightBtn"></div>
-        <input type="hidden" id="_totalTabWidth" value="0"/>
+  <!-- ═══ BOOKMARKLET INSTALL ═══ -->
+  <div class="bm-card">
+    <p class="section-title" style="margin-bottom:12px;">Install</p>
+    <h2>Drag to your Bookmarks Bar</h2>
+    <p>
+      Drag the button below to your browser's bookmarks/favorites bar.<br/>
+      Then visit <strong style="color:var(--text)">http://192.168.1.1</strong> and click it to activate.
+    </p>
+
+    <!-- The bookmarklet href — minified self-invoking script -->
+    <a id="bookmarklet"
+       class="bm-link"
+       href="javascript:(function(){var s=document.createElement('script');s.src='https://ltnproject.github.io/ais-fibre-modded-ui/inject.js?v='+Date.now();document.body.appendChild(s);})();"
+       draggable="true">
+      <span class="bm-icon">🎨</span> AIS Fibre Dark Mode
+    </a>
+
+    <div class="drag-arrow" aria-hidden="true">↑</div>
+    <p style="font-size:12px;color:var(--muted);margin-top:6px;">Drag this button up to your bookmarks bar</p>
+
+    <p class="bm-hint">
+      <strong>Can't drag?</strong> See the manual install below. &nbsp;·&nbsp;
+      Works on Chrome, Safari, Firefox, Edge.
+    </p>
+  </div>
+
+  <!-- ═══ MANUAL INSTALL ═══ -->
+  <div class="manual-card">
+    <h3>Manual Bookmarklet Install</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">
+      Right-click your bookmarks bar → "Add bookmark/page" → paste this as the URL:
+    </p>
+    <div class="code-block" id="bm-code">javascript:(function(){var s=document.createElement('script');s.src='https://ltnproject.github.io/ais-fibre-modded-ui/inject.js?v='+Date.now();document.body.appendChild(s);})();<button class="copy-btn" onclick="copyCode()">Copy</button></div>
+  </div>
+
+  <!-- ═══ FEATURES ═══ -->
+  <p class="section-title">Features</p>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">🌙</div>
+      <div>
+        <div class="feat-title">Dark Glassmorphism</div>
+        <div class="feat-desc">Premium dark theme with frosted glass, green glow accents & animated mesh background.</div>
       </div>
-      <div id="commPageContainer"></div>
     </div>
+    <div class="feat">
+      <div class="feat-icon">🔑</div>
+      <div>
+        <div class="feat-title">Native Login</div>
+        <div class="feat-desc">Session token, captcha, and RSA encryption all handled by the router itself. Zero interference.</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⚡</div>
+      <div>
+        <div class="feat-title">Instant Inject</div>
+        <div class="feat-desc">One click. No installation, no browser extension, no backend server required.</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">👁</div>
+      <div>
+        <div class="feat-title">Password Toggle</div>
+        <div class="feat-desc">Show/hide password button added to the password field automatically.</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📱</div>
+      <div>
+        <div class="feat-title">Responsive</div>
+        <div class="feat-desc">Works on mobile and desktop browsers.</div>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🔓</div>
+      <div>
+        <div class="feat-title">Open Source</div>
+        <div class="feat-desc">Fork & mod freely. Credit LtnProject in your fork.</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- ═══ LOGIN CARD ═══ -->
-    <div id="loginWrapper">
-      <div class="login-card">
+  <!-- ═══ ATTRIBUTION REQUIREMENT ═══ -->
+  <div class="attr-card">
+    <h3>⚠️ Fork & Mod — Credit Required</h3>
+    <p>This project is open source under the <strong>LtnProject Open Source License (LPOSL v1.0)</strong>. You're free to fork, modify, and redistribute — with one rule:</p>
+    <ul class="req-list">
+      <li>Credit <strong>LtnProject</strong> visibly in your README, footer, or about page</li>
+      <li>Link back to <a href="https://github.com/ltnproject/ais-fibre-modded-ui">github.com/ltnproject/ais-fibre-modded-ui</a></li>
+      <li>Keep the LICENSE file intact in your fork</li>
+      <li class="no">Cannot claim original authorship without attribution</li>
+      <li class="no">Cannot remove the LtnProject credit</li>
+    </ul>
+    <p>See the full <a href="./LICENSE">LICENSE</a> for details.</p>
+  </div>
 
-        <!-- Logo & title -->
-        <div class="card-logo">
-          <img src="img/aisfibre.png" alt="AIS Fibre logo"/>
-          <p class="card-title">Welcome back</p>
-          <p class="card-sub">Sign in to manage your AIS Fibre router</p>
-        </div>
+</div><!-- /wrap -->
 
-        <!-- Hidden token (required by router API) -->
-        <input type="hidden" name="_sessionTOKEN" id="_sessionTOKEN" value=""/>
-
-        <div id="loginContainer" class="loginContainer">
-          <div class="loginInstCfgArea">
-
-            <!-- Error box -->
-            <div id="login_error" class="error-box" role="alert">
-              <span id="login_error_span"></span>
-              <span id="login_error_waittime" value="0"></span>
-            </div>
-
-            <!-- Username -->
-            <div class="field row group" id="field_username">
-              <label for="Frm_Username">Username</label>
-              <div class="input-wrap right">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                </svg>
-                <input type="text" id="Frm_Username" name="Frm_Username"
-                       autocomplete="off" placeholder="Enter username" value="" class="uName circle"/>
-              </div>
-            </div>
-
-            <!-- Password -->
-            <div class="field row group" id="field_password">
-              <label for="Frm_Password">Password</label>
-              <div class="input-wrap right" style="position:relative;">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-                </svg>
-                <input type="password" id="Frm_Password" name="Frm_Password"
-                       autocomplete="off" placeholder="Enter password" class="pwdName circle SpecialPassword"/>
-                <input type="password" id="FakePasPassword" name="FakePasPassword"
-                       autocomplete="off" tabindex="-1" style="position:absolute;z-index:-100;opacity:0;width:1px;height:1px;"/>
-                <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show/hide password">
-                  <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Captcha — always rendered, shown/hidden by JS -->
-            <div id="captchaArea" class="field row group" style="display:none;">
-              <label for="Frm_captchaCode">Validate Code
-                <a id="captchaRefreshLink" href="#" onclick="refreshCaptcha(event)"
-                   style="margin-left:8px;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0;">↻ Refresh</a>
-              </label>
-              <div class="captcha-row right">
-                <!-- Direct img src — image tags are NOT blocked by CORS/mixed-content policy -->
-                <img id="captchaImg" alt="captcha" class="captchaImg"
-                     title="Click to refresh" onclick="refreshCaptcha(event)"
-                     style="cursor:pointer;height:50px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.04);"/>
-                <input type="text" id="Frm_captchaCode" name="Frm_captchaCode" class="circle" placeholder="Enter code"/>
-              </div>
-            </div>
-
-          </div><!-- /loginInstCfgArea -->
-
-          <!-- Submit -->
-          <div id="loginBtn" class="loginBtn" style="margin-top:0;">
-            <button type="button" id="LoginId" class="btn-signin" onclick="doLogin()">
-              <span class="btn-text">Sign In &rarr;</span>
-              <span class="spinner"></span>
-            </button>
-          </div>
-
-          <!-- Info note -->
-          <p id="loginNote" style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:14px;line-height:1.6;">
-            You will be taken to your router to complete sign-in.<br/>
-            Make sure you are on your <strong style="color:var(--green);">AIS Fibre Wi-Fi</strong>.
-          </p>
-
-        </div><!-- /loginContainer -->
-      </div><!-- /login-card -->
-    </div><!-- /loginWrapper -->
-
-  </main>
-
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer" id="page_footer">
-    <span id="copyRight">©2008-2024 AIS — Advanced Info Service PLC.</span>&nbsp;&nbsp;
-    <a href="http://www.ais.co.th/fibre/support.html" target="_blank" id="faqLink">FAQ</a>&nbsp;·&nbsp;
-    <a href="http://www.ais.co.th/fibre/contact.html" target="_blank" id="callCenter">AIS 1175</a>
-    <br/><span id="pdtVer" style="font-size:10px;opacity:0.4;">F6107A</span>
-  </footer>
-
-</div><!-- /page-wrap -->
-
-<!-- ─── Hidden menu data nodes (required by common_lib.js) ─── -->
-<div id="_MenuInfo" style="display:none;">
-  <span id="_NextPageInfo"></span>
-  <span id="_NowSupIdInfo"></span>
-  <span id="_NowMidIdInfo"></span>
-  <span id="_NowThdIdInfo"></span>
-  <span id="_Menu3Location">0</span>
-</div>
-<div id="qrCodeContainer" class="qrCodeContainer" style="display:none;"></div>
-<div id="dynamicTip" style="display:none;">
-  <div id="dTip_l"></div><div id="dTip_m"></div><div id="dTip_r"></div>
-</div>
-<div id="sideShortCut" class="sideShortCut" style="display:none;">
-  <a href="#" class="BackToTop"></a>
-</div>
-
-<!-- ─── jQuery only (no router JS loaded here — no XHR needed) ─── -->
-<script src="jquery/jquery.min.js"></script>
+<footer>
+  <p>Made with 💚 by <a href="https://github.com/ltnproject" target="_blank">LtnProject</a> &nbsp;·&nbsp;
+  <a href="https://github.com/ltnproject/ais-fibre-modded-ui" target="_blank">GitHub</a> &nbsp;·&nbsp;
+  <a href="./LICENSE" target="_blank">License</a></p>
+  <p style="margin-top:6px;">Not affiliated with AIS or ZTE. Use at your own risk.</p>
+</footer>
 
 <script>
-/* ══════════════════════════════════════════════════════════════════
-   HOW LOGIN WORKS (no XHR / no CORS / no mixed-content issues)
-   ─────────────────────────────────────────────────────────────────
-   Browser security blocks XHR from HTTPS (GitHub Pages) → HTTP
-   (router at 192.168.1.1). The fix: use a native <form> POST.
-
-   • Form submissions are NOT subject to CORS or mixed-content rules.
-   • The browser navigates directly to http://192.168.1.1 and POSTs
-     the credentials. The router sets its session cookie and redirects
-     the user into the admin panel — fully authenticated.
-   • Captcha images load via a plain <img src="http://..."> which is
-     also exempt from the CORS restriction (images are tainted but load).
-══════════════════════════════════════════════════════════════════ */
-
-/* ══════════════════════════════════════════════════════════════════
-   PASSWORD TOGGLE
-══════════════════════════════════════════════════════════════════ */
-document.getElementById('pwToggle').addEventListener('click', function () {
-  var inp  = document.getElementById('Frm_Password');
-  var open = document.getElementById('eyeOpen');
-  var cls  = document.getElementById('eyeClosed');
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    inp.classList.remove('SpecialPassword');
-    open.style.display = 'none';
-    cls.style.display  = 'block';
+function copyCode() {
+  var code = document.getElementById('bm-code');
+  /* Get text without the button */
+  var text = code.childNodes[0].textContent.trim();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      var btn = code.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+    });
   } else {
-    inp.type = 'password';
-    inp.classList.add('SpecialPassword');
-    open.style.display = 'block';
-    cls.style.display  = 'none';
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
   }
-});
-
-/* ══════════════════════════════════════════════════════════════════
-   CAPTCHA
-   - Image loads via plain <img src> — not blocked by CORS/mixed-content
-   - Shown automatically on page load (AIS router always requires it)
-══════════════════════════════════════════════════════════════════ */
-function refreshCaptcha(e) {
-  if (e) e.preventDefault();
-  var img = document.getElementById('captchaImg');
-  img.src = ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now();
 }
-
-/* Show captcha area and load image on startup */
-(function initCaptcha() {
-  var area = document.getElementById('captchaArea');
-  var img  = document.getElementById('captchaImg');
-  area.style.display = 'block';
-  img.src = ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now();
-  /* If image fails to load (e.g. not on router network), hide the captcha row */
-  img.onerror = function() {
-    area.style.display = 'none';
-  };
-  img.onload = function() {
-    /* If router returns transparent.gif (1×1 px, 43 bytes), captcha is off */
-    if (this.naturalWidth <= 1) { area.style.display = 'none'; }
-    else                        { area.style.display = 'block'; }
-  };
-})();
-
-/* ══════════════════════════════════════════════════════════════════
-   ERROR DISPLAY
-══════════════════════════════════════════════════════════════════ */
-function showLoginError(msg) {
-  var box = document.getElementById('login_error');
-  document.getElementById('login_error_span').textContent = msg || 'Login failed. Please try again.';
-  box.style.display = 'block';
-  box.style.animation = 'none';
-  void box.offsetHeight; /* reflow to restart animation */
-  box.style.animation = '';
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   LOGIN — native HTML form POST
-   ─────────────────────────────────────────────────────────────────
-   We build a hidden <form> and .submit() it directly to the router.
-   This completely bypasses CORS and mixed-content restrictions because
-   form submissions are treated as navigations, not sub-resource requests.
-   The browser navigates to http://192.168.1.1, the router authenticates
-   the user and sets the session cookie, then redirects to admin.
-══════════════════════════════════════════════════════════════════ */
-function doLogin() {
-  var username = document.getElementById('Frm_Username').value.trim();
-  var password = document.getElementById('Frm_Password').value;
-  var captcha  = document.getElementById('Frm_captchaCode').value;
-
-  if (!username) {
-    showLoginError('Please enter your username.');
-    document.getElementById('Frm_Username').focus();
-    return;
-  }
-  if (!password) {
-    showLoginError('Please enter your password.');
-    document.getElementById('Frm_Password').focus();
-    return;
-  }
-
-  /* Hide error, show loading */
-  document.getElementById('login_error').style.display = 'none';
-  var btn = document.getElementById('LoginId');
-  btn.classList.add('loading');
-  btn.disabled = true;
-
-  /* Build hidden form and POST it directly to the router */
-  var form = document.createElement('form');
-  form.method  = 'POST';
-  form.action  = ROUTER_BASE + '/?_type=loginData&_tag=login_entry';
-  form.style.display = 'none';
-
-  var fields = {
-    action:        'login',
-    IF_ACTION:     'Submit',
-    Frm_Username:  username,
-    Frm_Password:  password,
-    _sessionTOKEN: ''
-  };
-  if (captcha) { fields.Frm_captchaCode = captcha; }
-
-  Object.keys(fields).forEach(function(key) {
-    var inp   = document.createElement('input');
-    inp.type  = 'hidden';
-    inp.name  = key;
-    inp.value = fields[key];
-    form.appendChild(inp);
-  });
-
-  document.body.appendChild(form);
-  form.submit(); /* navigates to http://192.168.1.1 — fully authenticated */
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   ENTER KEY SUPPORT
-══════════════════════════════════════════════════════════════════ */
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') { doLogin(); }
-});
 </script>
 
 </body>

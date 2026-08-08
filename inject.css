@@ -1,0 +1,361 @@
+/*
+ * AIS Fibre Router — Modded UI Styles (Injected into real router page)
+ * by LtnProject | https://github.com/ltnproject/ais-fibre-modded-ui
+ * License: LtnProject Open Source License (LPOSL) v1.0
+ */
+
+/* ═══ IMPORT FONT (fallback if inject.js hasn't loaded it yet) ══════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ═══ TOKENS ════════════════════════════════════════════════════════════ */
+:root {
+  --ltn-bg:            #0a0f1e;
+  --ltn-surface:       rgba(255,255,255,0.055);
+  --ltn-border:        rgba(255,255,255,0.10);
+  --ltn-border-focus:  rgba(141,198,63,0.70);
+  --ltn-green:         #8dc63f;
+  --ltn-green-glow:    rgba(141,198,63,0.28);
+  --ltn-green-dark:    #6aa52d;
+  --ltn-text:          #e8edf5;
+  --ltn-muted:         rgba(232,237,245,0.48);
+  --ltn-error:         #ff5c5c;
+  --ltn-error-bg:      rgba(255,92,92,0.12);
+  --ltn-r:             14px;
+  --ltn-r-sm:          10px;
+  --ltn-shadow:        0 24px 64px rgba(0,0,0,0.55);
+  --ltn-t:             0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ═══ BODY RESET ════════════════════════════════════════════════════════ */
+body.ltn-body,
+body.ltn-body * { font-family: 'Inter', Arial, sans-serif !important; }
+
+body.ltn-body {
+  background: var(--ltn-bg) !important;
+  color: var(--ltn-text) !important;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ═══ ANIMATED BACKGROUND ═══════════════════════════════════════════════ */
+.ltn-mesh {
+  position: fixed !important;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(141,198,63,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,  rgba(52,120,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 40% at 50% 50%,  rgba(141,198,63,0.04) 0%, transparent 70%);
+  animation: ltnPulse 8s ease-in-out infinite alternate;
+}
+.ltn-grid {
+  position: fixed !important;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+@keyframes ltnPulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1;   }
+}
+
+/* ═══ TOP BAR ═══════════════════════════════════════════════════════════ */
+.ltn-topbar,
+#banner.ltn-topbar {
+  position: fixed !important;
+  top: 0; left: 0; right: 0;
+  height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 32px !important;
+  background: rgba(10,15,30,0.80) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid var(--ltn-border) !important;
+  z-index: 9000 !important;
+}
+
+/* Hide original banner noise */
+#banner .logo,
+#banner_switchArea,
+.timeArea,
+#mainNavigator,
+#slogan,
+#mn_first, #mn_last, #mn_li { display: none !important; }
+
+/* ═══ PAGE CONTAINER ════════════════════════════════════════════════════ */
+#page_container {
+  background: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#page_header { padding: 0 !important; }
+#page_content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: calc(100vh - 56px - 80px) !important;
+  padding: 80px 20px 40px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ CARD WRAP ═════════════════════════════════════════════════════════ */
+.ltn-card-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══ LOGIN CARD ════════════════════════════════════════════════════════ */
+#loginWrapper.ltn-card,
+.ltn-card {
+  background: var(--ltn-surface) !important;
+  border: 1px solid var(--ltn-border) !important;
+  border-radius: var(--ltn-r) !important;
+  padding: 44px 42px 36px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: var(--ltn-shadow), 0 0 0 1px rgba(141,198,63,0.05) !important;
+  width: 440px !important;
+  max-width: calc(100vw - 40px) !important;
+  min-height: unset !important;
+  height: auto !important;
+  background-color: transparent !important;
+  animation: ltnCardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes ltnCardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ═══ CARD HEADER ═══════════════════════════════════════════════════════ */
+.ltn-card-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.ltn-card-header img { height: 42px !important; object-fit: contain; filter: drop-shadow(0 0 14px var(--ltn-green-glow)); }
+.ltn-card-header .loginLogo img { height: 42px !important; }
+.ltn-title {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  margin: 14px 0 4px !important;
+  background: linear-gradient(135deg, #fff 30%, var(--ltn-green) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+.ltn-sub {
+  font-size: 13px !important;
+  color: var(--ltn-muted) !important;
+  margin: 0 !important;
+}
+
+/* ═══ LABELS ════════════════════════════════════════════════════════════ */
+.ltn-label,
+.loginInstCfgArea label,
+.loginInstCfgArea .group label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  color: var(--ltn-muted) !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+/* ═══ INPUT WRAP ════════════════════════════════════════════════════════ */
+.ltn-input-wrap {
+  position: relative !important;
+  display: block !important;
+}
+.ltn-icon {
+  position: absolute !important;
+  left: 13px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  opacity: 0.35 !important;
+  pointer-events: none !important;
+  color: var(--ltn-text) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.ltn-icon svg { display: block; }
+
+/* ═══ INPUTS ════════════════════════════════════════════════════════════ */
+.ltn-input,
+input.ltn-input[type="text"],
+input.ltn-input[type="password"],
+input.ltn-input {
+  width: 100% !important;
+  height: 50px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--ltn-border) !important;
+  border-radius: var(--ltn-r-sm) !important;
+  color: var(--ltn-text) !important;
+  font-size: 14px !important;
+  padding: 0 14px 0 42px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-color var(--ltn-t), box-shadow var(--ltn-t), background var(--ltn-t) !important;
+  box-sizing: border-box !important;
+}
+.ltn-input::placeholder { color: rgba(255,255,255,0.20) !important; }
+.ltn-input:focus {
+  border-color: var(--ltn-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--ltn-green-glow) !important;
+  background: rgba(141,198,63,0.04) !important;
+}
+
+/* ═══ PASSWORD TOGGLE ═══════════════════════════════════════════════════ */
+.ltn-pw-toggle {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: var(--ltn-text) !important;
+  opacity: 0.35 !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: opacity var(--ltn-t) !important;
+  box-shadow: none !important;
+  height: auto !important;
+  min-width: unset !important;
+  border-radius: 0 !important;
+}
+.ltn-pw-toggle:hover { opacity: 0.80 !important; }
+
+/* ═══ CAPTCHA ═══════════════════════════════════════════════════════════ */
+.ltn-captcha-img,
+#captchaImg.ltn-captcha-img {
+  height: 46px !important;
+  border-radius: var(--ltn-r-sm) !important;
+  border: 1px solid var(--ltn-border) !important;
+  cursor: pointer !important;
+  background: rgba(255,255,255,0.04) !important;
+  vertical-align: middle !important;
+}
+#captchaArea {
+  display: block !important;
+}
+
+/* ═══ SIGN IN BUTTON ════════════════════════════════════════════════════ */
+.ltn-btn,
+input.ltn-btn[type="submit"],
+button.ltn-btn {
+  width: 100% !important;
+  height: 50px !important;
+  background: linear-gradient(135deg, var(--ltn-green) 0%, var(--ltn-green-dark) 100%) !important;
+  border: none !important;
+  border-radius: var(--ltn-r-sm) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 24px rgba(141,198,63,0.28) !important;
+  transition: transform var(--ltn-t), box-shadow var(--ltn-t) !important;
+  min-width: unset !important;
+  border-radius: var(--ltn-r-sm) !important;
+  background-image: linear-gradient(135deg, var(--ltn-green) 0%, var(--ltn-green-dark) 100%) !important;
+  filter: none !important;
+  font-style: normal !important;
+  padding: 0 !important;
+}
+.ltn-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 32px rgba(141,198,63,0.44) !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+}
+.ltn-btn:active { transform: none !important; }
+.ltn-btn-wrap { margin-top: 8px !important; text-align: center !important; }
+
+/* ═══ ERROR HINT ════════════════════════════════════════════════════════ */
+.ltn-error,
+#login_error.ltn-error,
+.errorHint.ltn-error {
+  background: var(--ltn-error-bg) !important;
+  border: 1px solid rgba(255,92,92,0.25) !important;
+  border-radius: var(--ltn-r-sm) !important;
+  color: var(--ltn-error) !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  margin-bottom: 16px !important;
+}
+
+/* ═══ FIELD GROUPS ══════════════════════════════════════════════════════ */
+.loginInstCfgArea .group,
+.loginInstCfgArea .row.group {
+  margin-bottom: 16px !important;
+  height: auto !important;
+  min-height: unset !important;
+  padding: 0 !important;
+  clear: both !important;
+}
+.loginInstCfgArea .right { float: none !important; width: 100% !important; }
+
+/* ═══ FOOTER ════════════════════════════════════════════════════════════ */
+.ltn-footer,
+#page_footer.ltn-footer {
+  background: transparent !important;
+  border-top: 1px solid var(--ltn-border) !important;
+  text-align: center !important;
+  font-size: 11px !important;
+  color: var(--ltn-muted) !important;
+  padding: 16px !important;
+  height: auto !important;
+  line-height: 1.8 !important;
+  position: relative;
+  z-index: 1;
+}
+#page_footer a, .ltn-footer a { color: var(--ltn-muted) !important; }
+#page_footer a:hover, .ltn-footer a:hover { color: var(--ltn-text) !important; }
+
+/* ═══ CREDIT BADGE ══════════════════════════════════════════════════════ */
+.ltn-badge {
+  position: fixed !important;
+  bottom: 14px !important;
+  right: 16px !important;
+  font-size: 10px !important;
+  color: var(--ltn-muted) !important;
+  z-index: 9999 !important;
+  background: rgba(10,15,30,0.60) !important;
+  padding: 4px 10px !important;
+  border-radius: 100px !important;
+  border: 1px solid var(--ltn-border) !important;
+}
+.ltn-badge a { color: var(--ltn-green) !important; text-decoration: none !important; }
+.ltn-badge a:hover { text-decoration: underline !important; }
+
+/* ═══ HIDE CLUTTER ══════════════════════════════════════════════════════ */
+.logo, #logo { display: none !important; }
+.loginLogo { display: none !important; }
+h2 { display: none !important; }
+#page_header { display: none !important; }
+#site_holder, .site_holder { background: none !important; }
+#mainNavigator { display: none !important; }
+.qrCodeContainer { display: none !important; }
+.sideShortCut { display: none !important; }
+
+/* ═══ RESPONSIVE ════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  #loginWrapper.ltn-card, .ltn-card { padding: 32px 20px 28px !important; }
+}
