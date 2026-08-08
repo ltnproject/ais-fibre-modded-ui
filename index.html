@@ -12,7 +12,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
 <!-- ── ROUTER BASE URL ─────────────────────────────────────────────────── -->
-<!-- All API calls go to this origin. Change if your router IP differs.    -->
+<!-- Login form posts directly to this router IP. No XHR used (bypasses    -->
+<!-- CORS + mixed-content completely). Change IP below if yours differs.    -->
 <script>
   var ROUTER_BASE = "http://192.168.1.1";
 </script>
@@ -523,13 +524,18 @@ input[type="hidden"] { display: none !important; }
               </div>
             </div>
 
-            <!-- Captcha (shown only when router demands it) -->
-            <div id="captchaArea" class="field row group">
-              <label for="Frm_captchaCode">Validate Code</label>
+            <!-- Captcha — always rendered, shown/hidden by JS -->
+            <div id="captchaArea" class="field row group" style="display:none;">
+              <label for="Frm_captchaCode">Validate Code
+                <a id="captchaRefreshLink" href="#" onclick="refreshCaptcha(event)"
+                   style="margin-left:8px;font-size:10px;color:var(--green);text-decoration:none;letter-spacing:0;">↻ Refresh</a>
+              </label>
               <div class="captcha-row right">
-                <img id="captchaImg" src="img/transparent.gif" alt="captcha" class="captchaImg"
-                     title="Click to refresh" style="cursor:pointer;height:50px;border-radius:10px;border:1px solid var(--border);"/>
-                <input type="text" id="Frm_captchaCode" name="Frm_captchaCode" class="circle" placeholder="Code"/>
+                <!-- Direct img src — image tags are NOT blocked by CORS/mixed-content policy -->
+                <img id="captchaImg" alt="captcha" class="captchaImg"
+                     title="Click to refresh" onclick="refreshCaptcha(event)"
+                     style="cursor:pointer;height:50px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.04);"/>
+                <input type="text" id="Frm_captchaCode" name="Frm_captchaCode" class="circle" placeholder="Enter code"/>
               </div>
             </div>
 
@@ -538,10 +544,16 @@ input[type="hidden"] { display: none !important; }
           <!-- Submit -->
           <div id="loginBtn" class="loginBtn" style="margin-top:0;">
             <button type="button" id="LoginId" class="btn-signin" onclick="doLogin()">
-              <span class="btn-text">Sign In</span>
+              <span class="btn-text">Sign In &rarr;</span>
               <span class="spinner"></span>
             </button>
           </div>
+
+          <!-- Info note -->
+          <p id="loginNote" style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:14px;line-height:1.6;">
+            You will be taken to your router to complete sign-in.<br/>
+            Make sure you are on your <strong style="color:var(--green);">AIS Fibre Wi-Fi</strong>.
+          </p>
 
         </div><!-- /loginContainer -->
       </div><!-- /login-card -->
@@ -575,35 +587,23 @@ input[type="hidden"] { display: none !important; }
   <a href="#" class="BackToTop"></a>
 </div>
 
-<!-- ─── Router JS (must point to real router) ─── -->
+<!-- ─── jQuery only (no router JS loaded here — no XHR needed) ─── -->
 <script src="jquery/jquery.min.js"></script>
-<script src="jquery/crypto-js.min.js"></script>
-<script src="jquery/jsencrypt.min.js"></script>
-<script src="jquery/common_lib.js"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════════════════
-   ROUTER PROXY — rewrite all XHR/fetch to go to ROUTER_BASE
-   so GitHub Pages can communicate with the local router.
-══════════════════════════════════════════════════════════════════ */
-(function () {
-  var _open = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function (method, url) {
-    if (url && url.indexOf('http') !== 0 && url.indexOf('//') !== 0) {
-      url = ROUTER_BASE + (url.charAt(0) === '/' ? '' : '/') + url;
-    }
-    return _open.apply(this, [method, url].concat(Array.prototype.slice.call(arguments, 2)));
-  };
-})();
+   HOW LOGIN WORKS (no XHR / no CORS / no mixed-content issues)
+   ─────────────────────────────────────────────────────────────────
+   Browser security blocks XHR from HTTPS (GitHub Pages) → HTTP
+   (router at 192.168.1.1). The fix: use a native <form> POST.
 
-/* ══════════════════════════════════════════════════════════════════
-   WAIT OVERLAY — override common_lib showWaitTip
+   • Form submissions are NOT subject to CORS or mixed-content rules.
+   • The browser navigates directly to http://192.168.1.1 and POSTs
+     the credentials. The router sets its session cookie and redirects
+     the user into the admin panel — fully authenticated.
+   • Captcha images load via a plain <img src="http://..."> which is
+     also exempt from the CORS restriction (images are tainted but load).
 ══════════════════════════════════════════════════════════════════ */
-function showWaitTip(show) {
-  var overlay = document.getElementById('waitOverlay');
-  if (show) { overlay.classList.add('active'); }
-  else       { overlay.classList.remove('active'); }
-}
 
 /* ══════════════════════════════════════════════════════════════════
    PASSWORD TOGGLE
@@ -626,29 +626,57 @@ document.getElementById('pwToggle').addEventListener('click', function () {
 });
 
 /* ══════════════════════════════════════════════════════════════════
-   CAPTCHA REFRESH
+   CAPTCHA
+   - Image loads via plain <img src> — not blocked by CORS/mixed-content
+   - Shown automatically on page load (AIS router always requires it)
 ══════════════════════════════════════════════════════════════════ */
-document.getElementById('captchaImg').addEventListener('click', function () {
-  this.src = ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now();
-});
+function refreshCaptcha(e) {
+  if (e) e.preventDefault();
+  var img = document.getElementById('captchaImg');
+  img.src = ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now();
+}
+
+/* Show captcha area and load image on startup */
+(function initCaptcha() {
+  var area = document.getElementById('captchaArea');
+  var img  = document.getElementById('captchaImg');
+  area.style.display = 'block';
+  img.src = ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now();
+  /* If image fails to load (e.g. not on router network), hide the captcha row */
+  img.onerror = function() {
+    area.style.display = 'none';
+  };
+  img.onload = function() {
+    /* If router returns transparent.gif (1×1 px, 43 bytes), captcha is off */
+    if (this.naturalWidth <= 1) { area.style.display = 'none'; }
+    else                        { area.style.display = 'block'; }
+  };
+})();
 
 /* ══════════════════════════════════════════════════════════════════
-   LOGIN — sends credentials to the real router
+   ERROR DISPLAY
 ══════════════════════════════════════════════════════════════════ */
 function showLoginError(msg) {
   var box = document.getElementById('login_error');
   document.getElementById('login_error_span').textContent = msg || 'Login failed. Please try again.';
   box.style.display = 'block';
   box.style.animation = 'none';
-  box.offsetHeight; // reflow
+  void box.offsetHeight; /* reflow to restart animation */
   box.style.animation = '';
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   LOGIN — native HTML form POST
+   ─────────────────────────────────────────────────────────────────
+   We build a hidden <form> and .submit() it directly to the router.
+   This completely bypasses CORS and mixed-content restrictions because
+   form submissions are treated as navigations, not sub-resource requests.
+   The browser navigates to http://192.168.1.1, the router authenticates
+   the user and sets the session cookie, then redirects to admin.
+══════════════════════════════════════════════════════════════════ */
 function doLogin() {
-  var btn      = document.getElementById('LoginId');
   var username = document.getElementById('Frm_Username').value.trim();
   var password = document.getElementById('Frm_Password').value;
-  var token    = document.getElementById('_sessionTOKEN').value;
   var captcha  = document.getElementById('Frm_captchaCode').value;
 
   if (!username) {
@@ -662,115 +690,45 @@ function doLogin() {
     return;
   }
 
+  /* Hide error, show loading */
+  document.getElementById('login_error').style.display = 'none';
+  var btn = document.getElementById('LoginId');
   btn.classList.add('loading');
   btn.disabled = true;
-  document.getElementById('login_error').style.display = 'none';
 
-  /* Build post data — mirrors the original router login logic */
-  var postData = {
-    action:         'login',
-    _sessionTOKEN:  token,
-    IF_ACTION:      'Submit',
-    Frm_Username:   username,
-    Frm_Password:   password
+  /* Build hidden form and POST it directly to the router */
+  var form = document.createElement('form');
+  form.method  = 'POST';
+  form.action  = ROUTER_BASE + '/?_type=loginData&_tag=login_entry';
+  form.style.display = 'none';
+
+  var fields = {
+    action:        'login',
+    IF_ACTION:     'Submit',
+    Frm_Username:  username,
+    Frm_Password:  password,
+    _sessionTOKEN: ''
   };
-  if (captcha) { postData.Frm_captchaCode = captcha; }
+  if (captcha) { fields.Frm_captchaCode = captcha; }
 
-  /* Encrypt password using RSA if jsencrypt is available */
-  try {
-    if (typeof JSEncrypt !== 'undefined') {
-      var encrypt = new JSEncrypt();
-      /* Public key fetched on page load; fallback to raw if unavailable */
-      if (window._routerPubKey) {
-        encrypt.setPublicKey(window._routerPubKey);
-        var enc = encrypt.encrypt(password);
-        if (enc) { postData.Frm_Password = enc; }
-      }
-    }
-  } catch(e) {}
-
-  $.ajax({
-    type:     'POST',
-    url:      ROUTER_BASE + '/?_type=loginData&_tag=login_entry',
-    data:     postData,
-    dataType: 'json',
-    xhrFields: { withCredentials: true },
-    timeout:  8000
-  })
-  .done(function (data) {
-    if (data && data.need_refresh) {
-      /* Success — redirect to the (now-authenticated) router admin */
-      window.location.href = ROUTER_BASE + '/';
-    } else if (data && data.IF_ERRORPARAM) {
-      showLoginError(data.IF_ERRORPARAM);
-    } else {
-      /* Try a direct redirect anyway — the session cookie may be set */
-      window.location.href = ROUTER_BASE + '/';
-    }
-  })
-  .fail(function (xhr) {
-    if (xhr.status === 0) {
-      showLoginError('Cannot reach the router. Make sure you are connected to your AIS Fibre Wi-Fi.');
-    } else {
-      showLoginError('Login failed (HTTP ' + xhr.status + '). Please try again.');
-    }
-  })
-  .always(function () {
-    btn.classList.remove('loading');
-    btn.disabled = false;
+  Object.keys(fields).forEach(function(key) {
+    var inp   = document.createElement('input');
+    inp.type  = 'hidden';
+    inp.name  = key;
+    inp.value = fields[key];
+    form.appendChild(inp);
   });
+
+  document.body.appendChild(form);
+  form.submit(); /* navigates to http://192.168.1.1 — fully authenticated */
 }
 
 /* ══════════════════════════════════════════════════════════════════
    ENTER KEY SUPPORT
 ══════════════════════════════════════════════════════════════════ */
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter' && document.getElementById('loginWrapper').style.display !== 'none') {
-    doLogin();
-  }
+  if (e.key === 'Enter') { doLogin(); }
 });
-
-/* ══════════════════════════════════════════════════════════════════
-   FETCH SESSION TOKEN on load
-══════════════════════════════════════════════════════════════════ */
-$(document).ready(function () {
-  /* Fetch the login page from the real router to get session token & RSA key */
-  $.ajax({
-    type:  'GET',
-    url:   ROUTER_BASE + '/?_type=loginData&_tag=login_entry',
-    dataType: 'json',
-    xhrFields: { withCredentials: true },
-    timeout: 5000
-  })
-  .done(function (data) {
-    if (data && data._sessionTOKEN) {
-      $('#_sessionTOKEN').val(data._sessionTOKEN);
-    }
-    if (data && data.PubKey) {
-      window._routerPubKey = data.PubKey;
-    }
-    if (data && data.showCaptcha === '1') {
-      $('#captchaArea').show();
-      $('#captchaImg').attr('src', ROUTER_BASE + '/?_type=loginData&_tag=captchaImg&rand=' + Date.now());
-    }
-  });
-
-  /* Also call FakeClass1MenuShow if defined by common_lib */
-  if (typeof FakeClass1MenuShow === 'function') { FakeClass1MenuShow(); }
-});
-
-/* ══════════════════════════════════════════════════════════════════
-   STUBS for common_lib functions called during page init
-══════════════════════════════════════════════════════════════════ */
-var _sessionTmpToken = '';
-function openLink(p) { window.location.href = ROUTER_BASE + '/' + p; }
-function consoleLog() {}
-function reposition_box() {}
-var menuTreeJSON = [];
-var menuTreeObj  = { findMenu: function() { return null; } };
-function FakeClass1MenuShow() {}
-function AjaxQuery_ClassMenuClick() {}
-function GetLeftMostPageID() { return ''; }
 </script>
 
 </body>
